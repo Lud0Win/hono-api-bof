@@ -38,6 +38,24 @@ app.get('/api/products', async (c) => {
   }
 })
 
+// Endpoint de depuración para verificar las variables de entorno
+app.get('/api/debug', async (c) => {
+  try {
+    const supabaseUrl = c.env.SUPABASE_URL;
+    const supabaseKey = c.env.SUPABASE_ANON_KEY;
+
+    return c.json({
+      message: "Environment variable status",
+      hasSupabaseUrl: !!supabaseUrl,
+      urlLength: supabaseUrl ? supabaseUrl.length : 0,
+      hasSupabaseKey: !!supabaseKey,
+      keyLength: supabaseKey ? supabaseKey.length : 0,
+    });
+  } catch (e: any) {
+    return c.json({ error: 'Error in debug route', details: e.message }, 500)
+  }
+})
+
 // Endpoint para obtener un producto por su ID
 app.get('/api/products/:id', async (c) => {
   try {
@@ -72,5 +90,6 @@ app.get('/api/products/:id', async (c) => {
 })
 
 export default app
+
 
 
