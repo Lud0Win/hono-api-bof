@@ -1,93 +1,75 @@
-import { Hono } from 'hono';
-import { supabase } from './supabaseClient';
-import type { Product } from './types';
+import { Hono } from 'hono'
+import { createClient } from '@supabase/supabase-js'
+import { Product } from './types'
 
-const app = new Hono();
+// Define el tipo para las variables de entorno que Hono espera recibir de Vercel.
+// Esto proporciona autocompletado y seguridad de tipos.
+type Bindings = {
+  SUPABASE_URL: string
+  SUPABASE_ANON_KEY: string
+}
 
-// GET all products
+const app = new Hono<{ Bindings: Bindings }>()
+
+// Endpoint para obtener todos los productos
 app.get('/api/products', async (c) => {
-  const { data, error } = await supabase.from('products').select('*');
+  try {
+    // Crea el cliente de Supabase DENTRO del handler.
+    // Hono inyecta de forma segura las variables de entorno de Vercel en `c.env`.
+    const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY)
 
-  if (error) {
-    return c.json({ error: error.message }, 500);
+    // Realiza la consulta a la tabla 'products'
+    // Asegúrate de que el nombre de tu tabla sea exactamente 'products'.
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+
+    if (error) {
+      // Si hay un error de Supabase, lo registramos y devolvemos un error 500.
+      console.error('Supabase error:', error.message)
+      return c.json({ error: 'Failed to fetch products', details: error.message }, 500)
+    }
+
+    return c.json(data)
+  } catch (e: any) {
+    // Captura cualquier otro error inesperado durante la ejecución.
+    console.error('Catch block error:', e.message)
+    return c.json({ error: 'An internal error occurred', details: e.message }, 500)
   }
+})
 
-  return c.json(data);
-});
-
-// GET a single product by ID
+// Endpoint para obtener un producto por su ID
 app.get('/api/products/:id', async (c) => {
-  const id = c.req.param('id');
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    return c.json({ error: 'Product not found' }, 404);
-  }
-
-  return c.json(data);
-});
-
-// POST a new product
-app.post('/api/products', async (c) => {
-  const product = await c.req.json<Product>();
-
-  // Basic validation
-  if (!product.name || !product.price) {
-      return c.json({ error: 'Name and price are required' }, 400);
-  }
-
-  const { data, error } = await supabase
-    .from('products')
-    .insert([product])
-    .select()
-    .single();
-
-  if (error) {
-    return c.json({ error: error.message }, 500);
-  }
-
-  return c.json(data, 201);
-});
-
-// PUT (update) a product by ID
-app.put('/api/products/:id', async (c) => {
-    const id = c.req.param('id');
-    const product = await c.req.json<Partial<Product>>();
+  try {
+    const { id } = c.req.param()
+    const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY)
 
     const { data, error } = await supabase
-        .from('products')
-        .update(product)
-        .eq('id', id)
-        .select()
-        .single();
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single() // .single() para obtener un solo objeto en lugar de un array
 
     if (error) {
-        return c.json({ error: 'Product not found or could not be updated' }, 404);
+      // Si el código de error es 'PGRST116', significa que no se encontró ninguna fila.
+      if (error.code === 'PGRST116') {
+        return c.json({ error: `Product with id ${id} not found` }, 404)
+      }
+      console.error('Supabase error:', error.message)
+      return c.json({ error: 'Failed to fetch product', details: error.message }, 500)
     }
 
-    return c.json(data);
-});
-
-
-// DELETE a product by ID
-app.delete('/api/products/:id', async (c) => {
-    const id = c.req.param('id');
-
-    const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-    if (error) {
-        return c.json({ error: 'Product not found or could not be deleted' }, 404);
+    if (!data) {
+        return c.json({ error: `Product with id ${id} not found` }, 404)
     }
 
-    return c.json({ message: 'Product deleted successfully' });
-});
+    return c.json(data)
 
+  } catch (e: any) {
+    console.error('Catch block error:', e.message)
+    return c.json({ error: 'An internal error occurred', details: e.message }, 500)
+  }
+})
 
-export default app;
+export default app
+
