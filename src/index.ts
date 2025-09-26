@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { createClient } from '@supabase/supabase-js'
-import { Product } from './types'
+import type { Product } from './types'
 
 // Define el tipo para las variables de entorno que Hono espera recibir de Vercel.
 // Esto proporciona autocompletado y seguridad de tipos.
@@ -72,4 +72,5 @@ app.get('/api/products/:id', async (c) => {
 })
 
 export default app
+
 
