@@ -44,7 +44,7 @@ packages:
     resolution: {integrity: sha512-fTpH25zXfM7oX6nSgPImY4p9tMlpWj6QGf3+3eOdsA8PGiV/jO52a65x3SNHV29Ea6Kq+23zT5tM1+Z9z8k+Bg==}
 
   '@supabase/storage-js@2.6.0':
-    resolution: {integrity: sha512-t0Jp07Qv0qL3xZsp8v9oK9iU8M90lq/Kx3sU5n3QY+5455k0K3jI5aN+l3qI8E9tTBC+1+9e9+M+I9lA0Q==}
+    resolution: {integrity: sha512-REAxr7myf+3utMkI2oOmZ6sdplMZZ71/2NEIEMBZHL9Fkmm3/JnaOZVSRqvG4LStYj2v5WhCruCzuMn6oD/Drw==}
 
   '@supabase/supabase-js@2.45.1':
     resolution: {integrity: sha512-YcHi9CjY/M1dBiAYd8uv4oRrB1I4Lq52z4Kx7s221f7ztb6LZGpvSg2eWaE5Rh1PvxrGQL+DT9j2/9k7F/11dA==}
