@@ -36,7 +36,7 @@ packages:
     resolution: {integrity: sha512-s/a6iK2vt19F3m1Z7K8Wcr6kBLoChj2G111qk0wc52sWJcSy0RjYk42BDxM0cZ/d1SsoStYh63o3VnF8C8A/XQ==}
 
   '@supabase/postgrest-js@1.16.2':
-    resolution: {integrity: sha512-l9t/cK5hXgYgYJbYvLz/K3T2M3iYCL2bLqv1Y2+M1oA8PYC0oPItkSYsKqg69GzFq2K0g8A0a0YwQp0gSg+hAg==}
+    resolution: {integrity: sha512-dA/CIrSO2YDQ6ABNpbvEg9DwBMMbuKfWaFuZAU9c66PenoLSoIoyXk1Yq/wC2XISgEIqaMHmTrDAAsO80kjHqg==}
     dependencies:
       '@supabase/storage-js': 2.6.0
 
