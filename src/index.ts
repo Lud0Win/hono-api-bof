@@ -16,7 +16,7 @@ app.get('/api/products', async (c) => {
   try {
     // Crea el cliente de Supabase DENTRO del handler.
     // Hono inyecta de forma segura las variables de entorno de Vercel en `c.env`.
-    const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY)
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 
     // Realiza la consulta a la tabla 'products'
     // Asegúrate de que el nombre de tu tabla sea exactamente 'products'.
@@ -60,7 +60,7 @@ app.get('/api/debug', async (c) => {
 app.get('/api/products/:id', async (c) => {
   try {
     const { id } = c.req.param()
-    const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY)
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 
     const { data, error } = await supabase
       .from('products')
