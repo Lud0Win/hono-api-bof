@@ -41,8 +41,8 @@ app.get('/api/products', async (c) => {
 // Endpoint de depuración para verificar las variables de entorno
 app.get('/api/debug', async (c) => {
   try {
-    const supabaseUrl = process.SUPABASE_URL;
-    const supabaseKey = process.SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
     return c.json({
       message: "Environment variable status",
